@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -24,399 +23,395 @@ body { background: #0f1117; overflow-x: hidden; }
 const { useState, useRef, useEffect } = React;
 
 const C = {
-bg: “#0f1117”, surface: “#1a1d27”, surfaceAlt: “#222635”,
-border: “#2d3148”, text: “#e8eaf0”, muted: “#8b90a8”, dim: “#5c6180”,
-primary: “#3b82f6”, success: “#10b981”, warning: “#f59e0b”, danger: “#ef4444”,
-accent: “#f59e0b”, info: “#6366f1”,
+  bg: "#0f1117", surface: "#1a1d27", surfaceAlt: "#222635",
+  border: "#2d3148", text: "#e8eaf0", muted: "#8b90a8", dim: "#5c6180",
+  primary: "#3b82f6", success: "#10b981", warning: "#f59e0b", danger: "#ef4444",
+  accent: "#f59e0b", info: "#6366f1",
 };
 
 const CATEGORIES = [
-{ id: “customer”, label: “顧客”, icon: “🏢”, color: “#3b82f6” },
-{ id: “inventory”, label: “在庫”, icon: “📦”, color: “#f59e0b” },
-{ id: “sales”, label: “営業”, icon: “💰”, color: “#10b981” },
-{ id: “operation”, label: “業務”, icon: “⚙️”, color: “#6366f1” },
-{ id: “issue”, label: “課題”, icon: “⚠️”, color: “#ef4444” },
-{ id: “idea”, label: “改善案”, icon: “💡”, color: “#f472b6” },
+  { id: "customer", label: "顧客", icon: "🏢", color: "#3b82f6" },
+  { id: "inventory", label: "在庫", icon: "📦", color: "#f59e0b" },
+  { id: "sales", label: "営業", icon: "💰", color: "#10b981" },
+  { id: "operation", label: "業務", icon: "⚙️", color: "#6366f1" },
+  { id: "issue", label: "課題", icon: "⚠️", color: "#ef4444" },
+  { id: "idea", label: "改善案", icon: "💡", color: "#f472b6" },
 ];
 
-const TAGS = [“緊急”, “要確認”, “要フォロー”, “改善済み”, “保留”, “重要”];
+const TAGS = ["緊急", "要確認", "要フォロー", "改善済み", "保留", "重要"];
 
 const now = () => {
-const d = new Date();
-return d.toLocaleString(“ja-JP”, { month: “numeric”, day: “numeric”, hour: “2-digit”, minute: “2-digit” });
+  const d = new Date();
+  return d.toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
 };
 
 const initialEntries = [
-{ id: 1, category: “customer”, text: “大成建設 田中様：栄タワーの追加資材、来週月曜に壁面パネル10枚追加希望。在庫確認済み、対応可能。”, tags: [“要フォロー”], author: “営業 山田”, time: “4/1 09:15”, priority: false },
-{ id: 2, category: “issue”, text: “鹿島建設 千種駅前ビル改修：返却5日超過中。督促済みだが返答なし。担当山田花子。日額16,000円の損失が継続中。”, tags: [“緊急”, “要確認”], author: “事務 佐藤”, time: “4/1 09:30”, priority: true },
-{ id: 3, category: “inventory”, text: “床養生マット在庫残り112枚。来週の出庫予定60枚を考慮すると、追加発注が必要。発注リードタイム2週間。”, tags: [“要確認”], author: “倉庫 田村”, time: “4/1 10:00”, priority: false },
-{ id: 4, category: “sales”, text: “新規問い合わせ：三井住友建設 中部支店。名駅前再開発案件で養生資材一式の見積依頼。規模大きめ、来週訪問予定。”, tags: [“重要”, “要フォロー”], author: “営業 鈴木”, time: “4/1 10:45”, priority: false },
-{ id: 5, category: “operation”, text: “配送トラック2号車、来週月曜に車検。代車の手配が必要。1号車だけだと午前午後で2件が限界。”, tags: [“要確認”], author: “配送 高橋”, time: “4/1 11:00”, priority: false },
-{ id: 6, category: “idea”, text: “返却時の資材状態チェックをアプリ化したい。写真撮って記録するだけで破損報告になる仕組み。手書き伝票を廃止できる。”, tags: [“改善案”], author: “倉庫 田村”, time: “4/1 11:30”, priority: false },
-{ id: 7, category: “customer”, text: “清水建設 鈴木様：緑区物流倉庫の延長確定。追加3ヶ月。見積書を本日中に送付する。”, tags: [“要フォロー”], author: “営業 山田”, time: “4/1 13:00”, priority: false },
-{ id: 8, category: “inventory”, text: “養生テープ幅広、在庫320巻。月間消費約200巻。来月分は問題ないが、繁忙期前に500巻の追加発注を検討。”, tags: [], author: “倉庫 田村”, time: “4/1 14:00”, priority: false },
+  { id: 1, category: "customer", text: "大成建設 田中様：栄タワーの追加資材、来週月曜に壁面パネル10枚追加希望。在庫確認済み、対応可能。", tags: ["要フォロー"], author: "営業 山田", time: "4/1 09:15", priority: false },
+  { id: 2, category: "issue", text: "鹿島建設 千種駅前ビル改修：返却5日超過中。督促済みだが返答なし。担当山田花子。日額16,000円の損失が継続中。", tags: ["緊急", "要確認"], author: "事務 佐藤", time: "4/1 09:30", priority: true },
+  { id: 3, category: "inventory", text: "床養生マット在庫残り112枚。来週の出庫予定60枚を考慮すると、追加発注が必要。発注リードタイム2週間。", tags: ["要確認"], author: "倉庫 田村", time: "4/1 10:00", priority: false },
+  { id: 4, category: "sales", text: "新規問い合わせ：三井住友建設 中部支店。名駅前再開発案件で養生資材一式の見積依頼。規模大きめ、来週訪問予定。", tags: ["重要", "要フォロー"], author: "営業 鈴木", time: "4/1 10:45", priority: false },
+  { id: 5, category: "operation", text: "配送トラック2号車、来週月曜に車検。代車の手配が必要。1号車だけだと午前午後で2件が限界。", tags: ["要確認"], author: "配送 高橋", time: "4/1 11:00", priority: false },
+  { id: 6, category: "idea", text: "返却時の資材状態チェックをアプリ化したい。写真撮って記録するだけで破損報告になる仕組み。手書き伝票を廃止できる。", tags: ["改善案"], author: "倉庫 田村", time: "4/1 11:30", priority: false },
+  { id: 7, category: "customer", text: "清水建設 鈴木様：緑区物流倉庫の延長確定。追加3ヶ月。見積書を本日中に送付する。", tags: ["要フォロー"], author: "営業 山田", time: "4/1 13:00", priority: false },
+  { id: 8, category: "inventory", text: "養生テープ幅広、在庫320巻。月間消費約200巻。来月分は問題ないが、繁忙期前に500巻の追加発注を検討。", tags: [], author: "倉庫 田村", time: "4/1 14:00", priority: false },
 ];
 
 // AI Insights derived from entries
 const generateInsights = (entries) => {
-const insights = [];
-const urgent = entries.filter(e => e.tags.includes(“緊急”));
-const needFollow = entries.filter(e => e.tags.includes(“要フォロー”));
-const needCheck = entries.filter(e => e.tags.includes(“要確認”));
-const issues = entries.filter(e => e.category === “issue”);
-const ideas = entries.filter(e => e.category === “idea”);
+  const insights = [];
+  const urgent = entries.filter(e => e.tags.includes("緊急"));
+  const needFollow = entries.filter(e => e.tags.includes("要フォロー"));
+  const needCheck = entries.filter(e => e.tags.includes("要確認"));
+  const issues = entries.filter(e => e.category === "issue");
+  const ideas = entries.filter(e => e.category === "idea");
 
-if (urgent.length > 0) {
-insights.push({ type: “danger”, icon: “🚨”, text: `緊急対応が${urgent.length}件あります。延滞案件の回収を最優先してください。` });
-}
-if (needFollow.length > 0) {
-insights.push({ type: “warning”, icon: “📋”, text: `フォロー待ちが${needFollow.length}件。大成建設の追加資材と清水建設の見積書送付を本日中に。` });
-}
-if (needCheck.length > 0) {
-insights.push({ type: “info”, icon: “🔍”, text: `確認事項が${needCheck.length}件。床養生マットの追加発注と配送トラック車検の代車手配を進めてください。` });
-}
-if (ideas.length > 0) {
-insights.push({ type: “success”, icon: “💡”, text: `改善案が${ideas.length}件提出されています。返却時の写真記録アプリは実装コスト低く効果大です。` });
-}
-if (entries.length > 5) {
-insights.push({ type: “neutral”, icon: “📊”, text: `本日${entries.length}件のナレッジが蓄積。顧客情報${entries.filter(e=>e.category==="customer").length}件、在庫${entries.filter(e=>e.category==="inventory").length}件。` });
-}
-return insights;
+  if (urgent.length > 0) {
+    insights.push({ type: "danger", icon: "🚨", text: `緊急対応が${urgent.length}件あります。延滞案件の回収を最優先してください。` });
+  }
+  if (needFollow.length > 0) {
+    insights.push({ type: "warning", icon: "📋", text: `フォロー待ちが${needFollow.length}件。大成建設の追加資材と清水建設の見積書送付を本日中に。` });
+  }
+  if (needCheck.length > 0) {
+    insights.push({ type: "info", icon: "🔍", text: `確認事項が${needCheck.length}件。床養生マットの追加発注と配送トラック車検の代車手配を進めてください。` });
+  }
+  if (ideas.length > 0) {
+    insights.push({ type: "success", icon: "💡", text: `改善案が${ideas.length}件提出されています。返却時の写真記録アプリは実装コスト低く効果大です。` });
+  }
+  if (entries.length > 5) {
+    insights.push({ type: "neutral", icon: "📊", text: `本日${entries.length}件のナレッジが蓄積。顧客情報${entries.filter(e=>e.category==="customer").length}件、在庫${entries.filter(e=>e.category==="inventory").length}件。` });
+  }
+  return insights;
 };
 
 const insightColors = {
-danger: { bg: “rgba(239,68,68,0.1)”, border: “rgba(239,68,68,0.3)”, text: C.danger },
-warning: { bg: “rgba(245,158,11,0.1)”, border: “rgba(245,158,11,0.3)”, text: C.warning },
-info: { bg: “rgba(99,102,241,0.1)”, border: “rgba(99,102,241,0.3)”, text: C.info },
-success: { bg: “rgba(16,185,129,0.1)”, border: “rgba(16,185,129,0.3)”, text: C.success },
-neutral: { bg: “rgba(139,144,168,0.1)”, border: “rgba(139,144,168,0.3)”, text: C.muted },
+  danger: { bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.3)", text: C.danger },
+  warning: { bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.3)", text: C.warning },
+  info: { bg: "rgba(99,102,241,0.1)", border: "rgba(99,102,241,0.3)", text: C.info },
+  success: { bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.3)", text: C.success },
+  neutral: { bg: "rgba(139,144,168,0.1)", border: "rgba(139,144,168,0.3)", text: C.muted },
 };
 
 function App() {
-const [entries, setEntries] = useState(initialEntries);
-const [view, setView] = useState(“timeline”);
-const [filterCat, setFilterCat] = useState(“all”);
-const [filterTag, setFilterTag] = useState(“all”);
-const [search, setSearch] = useState(””);
-const [showInput, setShowInput] = useState(false);
-const [newText, setNewText] = useState(””);
-const [newCat, setNewCat] = useState(“operation”);
-const [newTags, setNewTags] = useState([]);
-const [newPriority, setNewPriority] = useState(false);
-const inputRef = useRef(null);
+  const [entries, setEntries] = useState(initialEntries);
+  const [view, setView] = useState("timeline");
+  const [filterCat, setFilterCat] = useState("all");
+  const [filterTag, setFilterTag] = useState("all");
+  const [search, setSearch] = useState("");
+  const [showInput, setShowInput] = useState(false);
+  const [newText, setNewText] = useState("");
+  const [newCat, setNewCat] = useState("operation");
+  const [newTags, setNewTags] = useState([]);
+  const [newPriority, setNewPriority] = useState(false);
+  const inputRef = useRef(null);
 
-useEffect(() => {
-if (showInput && inputRef.current) inputRef.current.focus();
-}, [showInput]);
+  useEffect(() => {
+    if (showInput && inputRef.current) inputRef.current.focus();
+  }, [showInput]);
 
-const addEntry = () => {
-if (!newText.trim()) return;
-const entry = {
-id: Date.now(),
-category: newCat,
-text: newText.trim(),
-tags: newTags,
-author: “自分”,
-time: now(),
-priority: newPriority,
-};
-setEntries(prev => [entry, …prev]);
-setNewText(””);
-setNewTags([]);
-setNewPriority(false);
-setShowInput(false);
-};
+  const addEntry = () => {
+    if (!newText.trim()) return;
+    const entry = {
+      id: Date.now(),
+      category: newCat,
+      text: newText.trim(),
+      tags: newTags,
+      author: "自分",
+      time: now(),
+      priority: newPriority,
+    };
+    setEntries(prev => [entry, ...prev]);
+    setNewText("");
+    setNewTags([]);
+    setNewPriority(false);
+    setShowInput(false);
+  };
 
-const toggleTag = (tag) => {
-setNewTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : […prev, tag]);
-};
+  const toggleTag = (tag) => {
+    setNewTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+  };
 
-const filtered = entries.filter(e => {
-if (filterCat !== “all” && e.category !== filterCat) return false;
-if (filterTag !== “all” && !e.tags.includes(filterTag)) return false;
-if (search && !e.text.includes(search) && !e.author.includes(search)) return false;
-return true;
-});
+  const filtered = entries.filter(e => {
+    if (filterCat !== "all" && e.category !== filterCat) return false;
+    if (filterTag !== "all" && !e.tags.includes(filterTag)) return false;
+    if (search && !e.text.includes(search) && !e.author.includes(search)) return false;
+    return true;
+  });
 
-const insights = generateInsights(entries);
+  const insights = generateInsights(entries);
 
-const tabs = [
-{ id: “timeline”, label: “タイムライン”, icon: “📝” },
-{ id: “insights”, label: “AI分析”, icon: “🧠” },
-];
+  const tabs = [
+    { id: "timeline", label: "タイムライン", icon: "📝" },
+    { id: "insights", label: "AI分析", icon: "🧠" },
+  ];
 
-return (
-<div style={{
-minHeight: “100vh”, background: C.bg, color: C.text,
-fontFamily: “‘Noto Sans JP’, -apple-system, sans-serif”,
-maxWidth: 480, margin: “0 auto”, paddingBottom: 96,
-}}>
-{/* Header */}
-<div style={{
-background: C.surface, padding: “14px 16px”,
-borderBottom: `1px solid ${C.border}`,
-display: “flex”, alignItems: “center”, justifyContent: “space-between”,
-}}>
-<div style={{ display: “flex”, alignItems: “center”, gap: 10 }}>
-<div style={{
-width: 32, height: 32, borderRadius: 10,
-background: `linear-gradient(135deg, ${C.info}, ${C.primary})`,
-display: “flex”, alignItems: “center”, justifyContent: “center”,
-fontSize: 16, color: “#fff”,
-}}>🧠</div>
-<div>
-<div style={{ fontSize: 14, fontWeight: 700 }}>YSKナレッジ</div>
-<div style={{ fontSize: 10, color: C.dim }}>社内情報ハブ</div>
-</div>
-</div>
-<div style={{ fontSize: 11, color: C.muted }}>{todayStr}</div>
-</div>
-
-```
-  {/* Search */}
-  <div style={{ padding: "10px 14px 6px" }}>
-    <input placeholder="🔍 ナレッジを検索..." value={search} onChange={e => setSearch(e.target.value)}
-      style={{
-        width: "100%", padding: "10px 14px", borderRadius: 12,
-        border: `1px solid ${C.border}`, background: C.surfaceAlt,
-        color: C.text, fontSize: 13, outline: "none", boxSizing: "border-box",
-      }} />
-  </div>
-
-  {/* Category Filter */}
-  <div style={{ padding: "4px 14px 8px", display: "flex", gap: 6, overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
-    <button onClick={() => setFilterCat("all")} style={{
-      padding: "5px 12px", borderRadius: 20, border: "none", cursor: "pointer",
-      fontSize: 11, fontWeight: 600, whiteSpace: "nowrap",
-      background: filterCat === "all" ? C.primary : C.surfaceAlt,
-      color: filterCat === "all" ? "#fff" : C.muted,
-    }}>すべて</button>
-    {CATEGORIES.map(cat => (
-      <button key={cat.id} onClick={() => setFilterCat(cat.id)} style={{
-        padding: "5px 12px", borderRadius: 20, border: "none", cursor: "pointer",
-        fontSize: 11, fontWeight: 600, whiteSpace: "nowrap",
-        background: filterCat === cat.id ? cat.color : C.surfaceAlt,
-        color: filterCat === cat.id ? "#fff" : C.muted,
-      }}>{cat.icon} {cat.label}</button>
-    ))}
-  </div>
-
-  {/* Tag Filter */}
-  <div style={{ padding: "0 14px 10px", display: "flex", gap: 4, overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
-    <button onClick={() => setFilterTag("all")} style={{
-      padding: "3px 10px", borderRadius: 12, border: `1px solid ${filterTag === "all" ? C.primary : C.border}`,
-      background: "transparent", cursor: "pointer", fontSize: 10, whiteSpace: "nowrap",
-      color: filterTag === "all" ? C.primary : C.dim,
-    }}>全タグ</button>
-    {TAGS.map(tag => (
-      <button key={tag} onClick={() => setFilterTag(filterTag === tag ? "all" : tag)} style={{
-        padding: "3px 10px", borderRadius: 12, border: `1px solid ${filterTag === tag ? C.warning : C.border}`,
-        background: "transparent", cursor: "pointer", fontSize: 10, whiteSpace: "nowrap",
-        color: filterTag === tag ? C.warning : C.dim,
-      }}>{tag}</button>
-    ))}
-  </div>
-
-  {/* Content */}
-  <div style={{ padding: "0 14px" }}>
-    {view === "timeline" && (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: 40, color: C.dim, fontSize: 13 }}>該当するナレッジがありません</div>
-        )}
-        {filtered.map(entry => {
-          const cat = CATEGORIES.find(c => c.id === entry.category);
-          return (
-            <div key={entry.id} style={{
-              background: C.surface, borderRadius: 14, padding: "12px 14px",
-              border: `1px solid ${entry.priority ? "rgba(239,68,68,0.4)" : C.border}`,
-              borderLeft: `3px solid ${cat?.color || C.primary}`,
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontSize: 14 }}>{cat?.icon}</span>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: cat?.color }}>{cat?.label}</span>
-                  {entry.priority && <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 6, background: "rgba(239,68,68,0.15)", color: C.danger, fontWeight: 600 }}>緊急</span>}
-                </div>
-                <span style={{ fontSize: 10, color: C.dim }}>{entry.time}</span>
-              </div>
-              <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7, marginBottom: 8 }}>{entry.text}</div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                  {entry.tags.map(tag => (
-                    <span key={tag} style={{
-                      fontSize: 10, padding: "2px 8px", borderRadius: 10,
-                      background: C.surfaceAlt, color: C.muted, border: `1px solid ${C.border}`,
-                    }}>{tag}</span>
-                  ))}
-                </div>
-                <span style={{ fontSize: 10, color: C.dim }}>{entry.author}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    )}
-
-    {view === "insights" && (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{
-          background: C.surface, borderRadius: 14, padding: "14px 16px",
-          border: `1px solid ${C.border}`,
-        }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 4 }}>🧠 AIナレッジ分析</div>
-          <div style={{ fontSize: 11, color: C.dim }}>蓄積された情報から次のアクションを提案</div>
-        </div>
-
-        {insights.map((ins, i) => {
-          const style = insightColors[ins.type];
-          return (
-            <div key={i} style={{
-              background: style.bg, borderRadius: 14, padding: "14px 16px",
-              border: `1px solid ${style.border}`,
-            }}>
-              <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{ins.icon}</span>
-                <div style={{ fontSize: 13, color: style.text, lineHeight: 1.7 }}>{ins.text}</div>
-              </div>
-            </div>
-          );
-        })}
-
-        <div style={{
-          background: C.surface, borderRadius: 14, padding: "14px 16px",
-          border: `1px solid ${C.border}`, marginTop: 6,
-        }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 10 }}>📊 カテゴリ別ナレッジ数</div>
-          {CATEGORIES.map(cat => {
-            const count = entries.filter(e => e.category === cat.id).length;
-            const max = Math.max(...CATEGORIES.map(c => entries.filter(e => e.category === c.id).length), 1);
-            return (
-              <div key={cat.id} style={{ marginBottom: 8 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                  <span style={{ fontSize: 12, color: C.muted }}>{cat.icon} {cat.label}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: cat.color }}>{count}件</span>
-                </div>
-                <div style={{ height: 4, borderRadius: 2, background: C.surfaceAlt, overflow: "hidden" }}>
-                  <div style={{ width: `${(count / max) * 100}%`, height: "100%", borderRadius: 2, background: cat.color }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    )}
-  </div>
-
-  {/* FAB - Add Entry */}
-  <button onClick={() => setShowInput(true)} style={{
-    position: "fixed", bottom: 110, right: 20, width: 56, height: 56,
-    borderRadius: "50%", border: "none", cursor: "pointer",
-    background: `linear-gradient(135deg, ${C.primary}, ${C.info})`,
-    color: "#fff", fontSize: 24, fontWeight: 700,
-    boxShadow: "0 4px 20px rgba(59,130,246,0.4)",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    zIndex: 50, maxWidth: 480,
-  }}>＋</button>
-
-  {/* Input Modal */}
-  {showInput && (
+  return (
     <div style={{
-      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-      background: "rgba(0,0,0,0.7)", zIndex: 100,
-      display: "flex", alignItems: "flex-end", justifyContent: "center",
-    }} onClick={e => { if (e.target === e.currentTarget) setShowInput(false); }}>
+      minHeight: "100vh", background: C.bg, color: C.text,
+      fontFamily: "'Noto Sans JP', -apple-system, sans-serif",
+      maxWidth: 480, margin: "0 auto", paddingBottom: 96,
+    }}>
+      {/* Header */}
       <div style={{
-        background: C.surface, borderRadius: "20px 20px 0 0", padding: "20px 16px 30px",
-        width: "100%", maxWidth: 480, maxHeight: "80vh", overflowY: "auto",
+        background: C.surface, padding: "14px 16px",
+        borderBottom: `1px solid ${C.border}`,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <span style={{ fontSize: 15, fontWeight: 700, color: C.text }}>📝 ナレッジを追加</span>
-          <button onClick={() => setShowInput(false)} style={{
-            background: "rgba(239,68,68,0.15)", border: `1px solid ${C.danger}`,
-            color: C.danger, borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontSize: 12, fontWeight: 600,
-          }}>✕</button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 10,
+            background: `linear-gradient(135deg, ${C.info}, ${C.primary})`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 16, color: "#fff",
+          }}>🧠</div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>YSKナレッジ</div>
+            <div style={{ fontSize: 10, color: C.dim }}>社内情報ハブ</div>
+          </div>
         </div>
+        <div style={{ fontSize: 11, color: C.muted }}>{todayStr}</div>
+      </div>
 
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
-          {CATEGORIES.map(cat => (
-            <button key={cat.id} onClick={() => setNewCat(cat.id)} style={{
-              padding: "6px 12px", borderRadius: 20, border: `1px solid ${newCat === cat.id ? cat.color : C.border}`,
-              background: newCat === cat.id ? cat.color : "transparent",
-              color: newCat === cat.id ? "#fff" : C.muted, fontSize: 11, fontWeight: 600, cursor: "pointer",
-            }}>{cat.icon} {cat.label}</button>
-          ))}
-        </div>
-
-        <textarea ref={inputRef} value={newText} onChange={e => setNewText(e.target.value)}
-          placeholder="情報を入力...&#10;例：大成建設 田中様から追加発注の連絡あり。壁面パネル10枚、来週月曜納品希望。"
+      {/* Search */}
+      <div style={{ padding: "10px 14px 6px" }}>
+        <input placeholder="🔍 ナレッジを検索..." value={search} onChange={e => setSearch(e.target.value)}
           style={{
-            width: "100%", height: 120, padding: "12px 14px", borderRadius: 12,
+            width: "100%", padding: "10px 14px", borderRadius: 12,
             border: `1px solid ${C.border}`, background: C.surfaceAlt,
-            color: C.text, fontSize: 14, lineHeight: 1.7, outline: "none",
-            resize: "none", boxSizing: "border-box", fontFamily: "inherit",
+            color: C.text, fontSize: 13, outline: "none", boxSizing: "border-box",
           }} />
+      </div>
 
-        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", margin: "10px 0" }}>
-          {TAGS.map(tag => (
-            <button key={tag} onClick={() => toggleTag(tag)} style={{
-              padding: "4px 10px", borderRadius: 12, cursor: "pointer", fontSize: 10,
-              border: `1px solid ${newTags.includes(tag) ? C.warning : C.border}`,
-              background: newTags.includes(tag) ? "rgba(245,158,11,0.15)" : "transparent",
-              color: newTags.includes(tag) ? C.warning : C.dim,
-            }}>{tag}</button>
-          ))}
+      {/* Category Filter */}
+      <div style={{ padding: "4px 14px 8px", display: "flex", gap: 6, overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+        <button onClick={() => setFilterCat("all")} style={{
+          padding: "5px 12px", borderRadius: 20, border: "none", cursor: "pointer",
+          fontSize: 11, fontWeight: 600, whiteSpace: "nowrap",
+          background: filterCat === "all" ? C.primary : C.surfaceAlt,
+          color: filterCat === "all" ? "#fff" : C.muted,
+        }}>すべて</button>
+        {CATEGORIES.map(cat => (
+          <button key={cat.id} onClick={() => setFilterCat(cat.id)} style={{
+            padding: "5px 12px", borderRadius: 20, border: "none", cursor: "pointer",
+            fontSize: 11, fontWeight: 600, whiteSpace: "nowrap",
+            background: filterCat === cat.id ? cat.color : C.surfaceAlt,
+            color: filterCat === cat.id ? "#fff" : C.muted,
+          }}>{cat.icon} {cat.label}</button>
+        ))}
+      </div>
+
+      {/* Tag Filter */}
+      <div style={{ padding: "0 14px 10px", display: "flex", gap: 4, overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+        <button onClick={() => setFilterTag("all")} style={{
+          padding: "3px 10px", borderRadius: 12, border: `1px solid ${filterTag === "all" ? C.primary : C.border}`,
+          background: "transparent", cursor: "pointer", fontSize: 10, whiteSpace: "nowrap",
+          color: filterTag === "all" ? C.primary : C.dim,
+        }}>全タグ</button>
+        {TAGS.map(tag => (
+          <button key={tag} onClick={() => setFilterTag(filterTag === tag ? "all" : tag)} style={{
+            padding: "3px 10px", borderRadius: 12, border: `1px solid ${filterTag === tag ? C.warning : C.border}`,
+            background: "transparent", cursor: "pointer", fontSize: 10, whiteSpace: "nowrap",
+            color: filterTag === tag ? C.warning : C.dim,
+          }}>{tag}</button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: "0 14px" }}>
+        {view === "timeline" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.length === 0 && (
+              <div style={{ textAlign: "center", padding: 40, color: C.dim, fontSize: 13 }}>該当するナレッジがありません</div>
+            )}
+            {filtered.map(entry => {
+              const cat = CATEGORIES.find(c => c.id === entry.category);
+              return (
+                <div key={entry.id} style={{
+                  background: C.surface, borderRadius: 14, padding: "12px 14px",
+                  border: `1px solid ${entry.priority ? "rgba(239,68,68,0.4)" : C.border}`,
+                  borderLeft: `3px solid ${cat?.color || C.primary}`,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ fontSize: 14 }}>{cat?.icon}</span>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: cat?.color }}>{cat?.label}</span>
+                      {entry.priority && <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 6, background: "rgba(239,68,68,0.15)", color: C.danger, fontWeight: 600 }}>緊急</span>}
+                    </div>
+                    <span style={{ fontSize: 10, color: C.dim }}>{entry.time}</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7, marginBottom: 8 }}>{entry.text}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                      {entry.tags.map(tag => (
+                        <span key={tag} style={{
+                          fontSize: 10, padding: "2px 8px", borderRadius: 10,
+                          background: C.surfaceAlt, color: C.muted, border: `1px solid ${C.border}`,
+                        }}>{tag}</span>
+                      ))}
+                    </div>
+                    <span style={{ fontSize: 10, color: C.dim }}>{entry.author}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {view === "insights" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{
+              background: C.surface, borderRadius: 14, padding: "14px 16px",
+              border: `1px solid ${C.border}`,
+            }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 4 }}>🧠 AIナレッジ分析</div>
+              <div style={{ fontSize: 11, color: C.dim }}>蓄積された情報から次のアクションを提案</div>
+            </div>
+
+            {insights.map((ins, i) => {
+              const style = insightColors[ins.type];
+              return (
+                <div key={i} style={{
+                  background: style.bg, borderRadius: 14, padding: "14px 16px",
+                  border: `1px solid ${style.border}`,
+                }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                    <span style={{ fontSize: 18, flexShrink: 0 }}>{ins.icon}</span>
+                    <div style={{ fontSize: 13, color: style.text, lineHeight: 1.7 }}>{ins.text}</div>
+                  </div>
+                </div>
+              );
+            })}
+
+            <div style={{
+              background: C.surface, borderRadius: 14, padding: "14px 16px",
+              border: `1px solid ${C.border}`, marginTop: 6,
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 10 }}>📊 カテゴリ別ナレッジ数</div>
+              {CATEGORIES.map(cat => {
+                const count = entries.filter(e => e.category === cat.id).length;
+                const max = Math.max(...CATEGORIES.map(c => entries.filter(e => e.category === c.id).length), 1);
+                return (
+                  <div key={cat.id} style={{ marginBottom: 8 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                      <span style={{ fontSize: 12, color: C.muted }}>{cat.icon} {cat.label}</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: cat.color }}>{count}件</span>
+                    </div>
+                    <div style={{ height: 4, borderRadius: 2, background: C.surfaceAlt, overflow: "hidden" }}>
+                      <div style={{ width: `${(count / max) * 100}%`, height: "100%", borderRadius: 2, background: cat.color }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* FAB - Add Entry */}
+      <button onClick={() => setShowInput(true)} style={{
+        position: "fixed", bottom: 110, right: 20, width: 56, height: 56,
+        borderRadius: "50%", border: "none", cursor: "pointer",
+        background: `linear-gradient(135deg, ${C.primary}, ${C.info})`,
+        color: "#fff", fontSize: 24, fontWeight: 700,
+        boxShadow: "0 4px 20px rgba(59,130,246,0.4)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        zIndex: 50, maxWidth: 480,
+      }}>＋</button>
+
+      {/* Input Modal */}
+      {showInput && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.7)", zIndex: 100,
+          display: "flex", alignItems: "flex-end", justifyContent: "center",
+        }} onClick={e => { if (e.target === e.currentTarget) setShowInput(false); }}>
+          <div style={{
+            background: C.surface, borderRadius: "20px 20px 0 0", padding: "20px 16px 30px",
+            width: "100%", maxWidth: 480, maxHeight: "80vh", overflowY: "auto",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: C.text }}>📝 ナレッジを追加</span>
+              <button onClick={() => setShowInput(false)} style={{
+                background: "rgba(239,68,68,0.15)", border: `1px solid ${C.danger}`,
+                color: C.danger, borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontSize: 12, fontWeight: 600,
+              }}>✕</button>
+            </div>
+
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+              {CATEGORIES.map(cat => (
+                <button key={cat.id} onClick={() => setNewCat(cat.id)} style={{
+                  padding: "6px 12px", borderRadius: 20, border: `1px solid ${newCat === cat.id ? cat.color : C.border}`,
+                  background: newCat === cat.id ? cat.color : "transparent",
+                  color: newCat === cat.id ? "#fff" : C.muted, fontSize: 11, fontWeight: 600, cursor: "pointer",
+                }}>{cat.icon} {cat.label}</button>
+              ))}
+            </div>
+
+            <textarea ref={inputRef} value={newText} onChange={e => setNewText(e.target.value)}
+              placeholder="情報を入力...&#10;例：大成建設 田中様から追加発注の連絡あり。壁面パネル10枚、来週月曜納品希望。"
+              style={{
+                width: "100%", height: 120, padding: "12px 14px", borderRadius: 12,
+                border: `1px solid ${C.border}`, background: C.surfaceAlt,
+                color: C.text, fontSize: 14, lineHeight: 1.7, outline: "none",
+                resize: "none", boxSizing: "border-box", fontFamily: "inherit",
+              }} />
+
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", margin: "10px 0" }}>
+              {TAGS.map(tag => (
+                <button key={tag} onClick={() => toggleTag(tag)} style={{
+                  padding: "4px 10px", borderRadius: 12, cursor: "pointer", fontSize: 10,
+                  border: `1px solid ${newTags.includes(tag) ? C.warning : C.border}`,
+                  background: newTags.includes(tag) ? "rgba(245,158,11,0.15)" : "transparent",
+                  color: newTags.includes(tag) ? C.warning : C.dim,
+                }}>{tag}</button>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <button onClick={() => setNewPriority(!newPriority)} style={{
+                padding: "8px 14px", borderRadius: 10, cursor: "pointer", fontSize: 12, fontWeight: 600,
+                border: `1px solid ${newPriority ? C.danger : C.border}`,
+                background: newPriority ? "rgba(239,68,68,0.15)" : "transparent",
+                color: newPriority ? C.danger : C.dim,
+              }}>🚨 緊急</button>
+
+              <button onClick={addEntry} style={{
+                flex: 1, padding: "12px", borderRadius: 12, border: "none", cursor: "pointer",
+                fontSize: 14, fontWeight: 700,
+                background: newText.trim() ? `linear-gradient(135deg, ${C.primary}, ${C.info})` : C.surfaceAlt,
+                color: newText.trim() ? "#fff" : C.dim,
+              }}>投稿する</button>
+            </div>
+          </div>
         </div>
+      )}
 
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button onClick={() => setNewPriority(!newPriority)} style={{
-            padding: "8px 14px", borderRadius: 10, cursor: "pointer", fontSize: 12, fontWeight: 600,
-            border: `1px solid ${newPriority ? C.danger : C.border}`,
-            background: newPriority ? "rgba(239,68,68,0.15)" : "transparent",
-            color: newPriority ? C.danger : C.dim,
-          }}>🚨 緊急</button>
-
-          <button onClick={addEntry} style={{
-            flex: 1, padding: "12px", borderRadius: 12, border: "none", cursor: "pointer",
-            fontSize: 14, fontWeight: 700,
-            background: newText.trim() ? `linear-gradient(135deg, ${C.primary}, ${C.info})` : C.surfaceAlt,
-            color: newText.trim() ? "#fff" : C.dim,
-          }}>投稿する</button>
-        </div>
+      {/* Bottom Tab */}
+      <div style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, height: 96,
+        background: C.surface, borderTop: `1px solid ${C.border}`,
+        display: "flex", alignItems: "flex-start", justifyContent: "space-around",
+        paddingTop: 10, paddingBottom: 38, maxWidth: 480, margin: "0 auto",
+      }}>
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setView(t.id)} style={{
+            flex: 1, border: "none", background: "transparent", cursor: "pointer",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0",
+          }}>
+            <span style={{ fontSize: 22, opacity: view === t.id ? 1 : 0.4 }}>{t.icon}</span>
+            <span style={{
+              fontSize: 10, fontWeight: view === t.id ? 700 : 400,
+              color: view === t.id ? C.primary : C.muted,
+            }}>{t.label}</span>
+          </button>
+        ))}
       </div>
     </div>
-  )}
-
-  {/* Bottom Tab */}
-  <div style={{
-    position: "fixed", bottom: 0, left: 0, right: 0, height: 96,
-    background: C.surface, borderTop: `1px solid ${C.border}`,
-    display: "flex", alignItems: "flex-start", justifyContent: "space-around",
-    paddingTop: 10, paddingBottom: 38, maxWidth: 480, margin: "0 auto",
-  }}>
-    {tabs.map(t => (
-      <button key={t.id} onClick={() => setView(t.id)} style={{
-        flex: 1, border: "none", background: "transparent", cursor: "pointer",
-        display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0",
-      }}>
-        <span style={{ fontSize: 22, opacity: view === t.id ? 1 : 0.4 }}>{t.icon}</span>
-        <span style={{
-          fontSize: 10, fontWeight: view === t.id ? 700 : 400,
-          color: view === t.id ? C.primary : C.muted,
-        }}>{t.label}</span>
-      </button>
-    ))}
-  </div>
-</div>
-```
-
-);
+  );
 }
 
-const todayStr = new Date().toLocaleDateString(“ja-JP”, { year: “numeric”, month: “long”, day: “numeric”, weekday: “short” });
+const todayStr = new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric", weekday: "short" });
 
-ReactDOM.createRoot(document.getElementById(“root”)).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
-
 </body>
 </html>
